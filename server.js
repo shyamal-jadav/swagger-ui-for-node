@@ -4,6 +4,9 @@ const app = express();
 var argv = require('minimist')(process.argv.slice(2));
 var cors = require('cors');
 
+var swaggerUi = require('swagger-ui-express');
+var swaggerDocument = require('./swagger.json')
+
 // CONTROLLERS
 var usersCtrl = require('./controllers/users');
 
@@ -16,7 +19,7 @@ app.use(
 );
 app.options('*', cors());
 
-// SWAGGER
+
 var subpath = express();
 app.use(
 	bodyParser.json({
@@ -30,19 +33,9 @@ app.use(
 	})
 );
 app.use('', subpath);
-// var swagger = require('swagger-node-express').createNew(subpath);
-// app.use(express.static('swagger'));
-// swagger.setApiInfo({
-// 	title: 'CRUD API',
-// 	description: 'CRUD API Description',
-// 	termsOfServiceUrl: '',
-// 	contact: '<your email here>',
-// 	license: '',
-// 	licenseUrl: ''
-// });
-// // Set api-doc path
-// swagger.setAppHandler(app);
-// swagger.configureSwaggerPaths('', 'api-docs', '');
+
+// SWAGGER
+app.use('/swagger', swaggerUi.serve, swaggerUi.setup(swaggerDocument))
 
 // Configure the API domain
 var domain = 'localhost';
